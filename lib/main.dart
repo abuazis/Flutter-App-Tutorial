@@ -8,20 +8,40 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text("Latihan Image"),
+          title: Text("Spacer Widget"),
         ),
         body: Center(
-          child: Container(
-            color: Colors.black,
-            width: 200,
-            height: 200,
-            padding: EdgeInsets.all(3),
-            child: Image(
-              // image: NetworkImage("https://i.pinimg.com/originals/a8/47/c0/a847c0a42b4631d4a296185d3e756d82.png"),
-              image: AssetImage("assets/img/toy-story.jpg"),
-              fit: BoxFit.contain,
-              repeat: ImageRepeat.repeat,
-            ),
+          child: Row(
+            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Spacer(
+                flex: 1,
+              ),
+              Container(
+                width: 80,
+                height: 80,
+                color: Colors.red,
+              ),
+              Spacer(
+                flex: 2,
+              ),
+              Container(
+                width: 80,
+                height: 80,
+                color: Colors.green,
+              ),
+              Spacer(
+                flex: 3,
+              ),
+              Container(
+                width: 80,
+                height: 80,
+                color: Colors.blue,
+              ),
+              Spacer(
+                flex: 2,
+              ),
+            ],
           ),
         ),
       ),
