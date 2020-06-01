@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/second_screen.dart';
+import 'package:flutter_app/screens/second_screen.dart';
 
 class MainScreen extends StatelessWidget {
   @override
