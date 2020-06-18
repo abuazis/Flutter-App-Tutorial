@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'model/user_model.dart';
 
 void main() => runApp(MyApp());
 
@@ -9,29 +8,76 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String output = "no data";
+  bool isON = false;
+  Widget myWidget = Container(
+    width: 200,
+    height: 100,
+    decoration: BoxDecoration(
+      color: Colors.red,
+      border: Border.all(
+        color: Colors.black,
+        width: 3,
+      ),
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text("API Demo"),
+          title: Text("Animated Switcher"),
         ),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              Text(output),
-              RaisedButton(
-                child: Text("GET"),
-                onPressed: () {
-                  User.getUsers("2").then((users) {
-                    for (int i = 0; i < users.length; i++) {
-                      output = output + "[ " + users[i].name + " ] ";
-                    }
-                    setState(() {});
-                  });
+              AnimatedSwitcher(
+                duration: Duration(seconds: 1),
+                child: myWidget,
+                transitionBuilder: (child, animation) => FadeTransition(
+                  opacity: animation,
+                  child: child,
+                ),
+              ),
+              Switch(
+                activeColor: Colors.green,
+                inactiveThumbColor: Colors.red,
+                inactiveTrackColor: Colors.red[200],
+                value: isON,
+                onChanged: (newValue) {
+                  isON = newValue;
+                  setState(
+                    () {
+                      if (isON) {
+                        myWidget = Container(
+                          key: ValueKey(1),
+                          width: 200,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            color: Colors.green,
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 3,
+                            ),
+                          ),
+                        );
+                      } else {
+                        myWidget = Container(
+                          key: ValueKey(2),
+                          width: 200,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 3,
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                  );
                 },
               ),
             ],
