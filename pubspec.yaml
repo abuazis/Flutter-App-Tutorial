@@ -69,6 +69,15 @@ flutter:
     - family: Pacifico
       fonts:
         - asset: assets/fonts/pacifico.regular.ttf
+    - family: Cardo
+      fonts:
+        - asset: assets/fonts/cardo.regular.ttf
+    - family: Gabriola
+      fonts:
+        - asset: assets/fonts/gabriola.ttf
+    - family: Milonga
+      fonts:
+        - asset: assets/fonts/milonga.regular.ttf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

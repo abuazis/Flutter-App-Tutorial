@@ -1,5 +1,5 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:qrscan/qrscan.dart' as scanner;
 
 void main() => runApp(MyApp());
 
@@ -7,44 +7,87 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: MainPage(),
-    );
-  }
-}
-
-class MainPage extends StatefulWidget {
-  @override
-  _MainPageState createState() => _MainPageState();
-}
-
-class _MainPageState extends State<MainPage> {
-  String text = "Hasil QR Scan";
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("QR Scan")
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(text),
-            SizedBox(
-              height: 20,
-            ),
-            RaisedButton(
-              child: Text("Scan"),
-              onPressed: () async {
-                text = await scanner.scan();
-                setState(() {});
-              },
-            )
-          ],
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text("Flutter Typography"),
         ),
-      ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Text(
+                "Contoh 01 (tanpa apapun)",
+                style: TextStyle(fontSize: 20),
+              ),
+              Text(
+                "Contoh 02 (small caps)",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontFeatures: [FontFeature.enable("smcp")]
+                ),
+              ),
+              Text(
+                "Contoh 3 1/2 (small caps)",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontFeatures: [
+                    FontFeature.enable("smcp"),
+                    FontFeature.enable("frac")
+                  ]
+                ),
+              ),
+              Text(
+                "Milonga 3 1/2 (small caps)",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontFamily: "Milonga",
+                  fontFeatures: [
+                    FontFeature.enable("smcp"),
+                    FontFeature.enable("frac")
+                  ]
+                ),
+              ),
+              Text(
+                "Contoh Cardo 19 (tanpa apapun)",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontFamily: "Cardo"
+                ),
+              ),
+              Text(
+                "Contoh Cardo 19 (old style)",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontFamily: "Cardo",
+                  fontFeatures: [
+                    FontFeature.oldstyleFigures()
+                  ]
+                ),
+              ),
+              Text(
+                "Gabriola (default)",
+                style: TextStyle(
+                  fontSize: 30,
+                  fontFamily: "Gabriola",
+                  fontFeatures: [
+                    FontFeature.oldstyleFigures()
+                  ]
+                ),
+              ),
+              Text(
+                "Gabriola (style set no 5)",
+                style: TextStyle(
+                  fontSize: 30,
+                  fontFamily: "Gabriola",
+                  fontFeatures: [
+                    FontFeature.stylisticSet(5)
+                  ]
+                ),
+              ),
+            ],
+          ),
+        ),
+      )
     );
   }
 }
