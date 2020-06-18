@@ -6,7 +6,8 @@ class ColorfulButton extends StatefulWidget {
   IconData iconData;
 
   @override
-  _ColorfulButtonState createState() => _ColorfulButtonState(mainColor, secondColor, iconData);
+  _ColorfulButtonState createState() =>
+      _ColorfulButtonState(mainColor, secondColor, iconData);
 
   ColorfulButton(this.mainColor, this.secondColor, this.iconData);
 }
@@ -53,10 +54,7 @@ class _ColorfulButtonState extends State<ColorfulButton> {
                     color: (isPressed) ? secondColor : mainColor,
                     child: Transform.rotate(
                       angle: -pi / 4,
-                      child: Icon(
-                        iconData,
-                        color: Colors.white
-                      ),
+                      child: Icon(iconData, color: Colors.white),
                     ),
                   ),
                 ),

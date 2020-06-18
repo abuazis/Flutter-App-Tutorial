@@ -9,85 +9,42 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text("Flutter Typography"),
+          title: Text("Custom Clipper"),
         ),
         body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Text(
-                "Contoh 01 (tanpa apapun)",
-                style: TextStyle(fontSize: 20),
+          child: ClipPath(
+            clipper: MyClipper(),
+            child: Image(
+              width: 300,
+              image: NetworkImage(
+                "https://i.pinimg.com/originals/3b/d5/a7/3bd5a78fede2560fc13ed5d55aa42538.jpg",
               ),
-              Text(
-                "Contoh 02 (small caps)",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontFeatures: [FontFeature.enable("smcp")]
-                ),
-              ),
-              Text(
-                "Contoh 3 1/2 (small caps)",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontFeatures: [
-                    FontFeature.enable("smcp"),
-                    FontFeature.enable("frac")
-                  ]
-                ),
-              ),
-              Text(
-                "Milonga 3 1/2 (small caps)",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontFamily: "Milonga",
-                  fontFeatures: [
-                    FontFeature.enable("smcp"),
-                    FontFeature.enable("frac")
-                  ]
-                ),
-              ),
-              Text(
-                "Contoh Cardo 19 (tanpa apapun)",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontFamily: "Cardo"
-                ),
-              ),
-              Text(
-                "Contoh Cardo 19 (old style)",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontFamily: "Cardo",
-                  fontFeatures: [
-                    FontFeature.oldstyleFigures()
-                  ]
-                ),
-              ),
-              Text(
-                "Gabriola (default)",
-                style: TextStyle(
-                  fontSize: 30,
-                  fontFamily: "Gabriola",
-                  fontFeatures: [
-                    FontFeature.oldstyleFigures()
-                  ]
-                ),
-              ),
-              Text(
-                "Gabriola (style set no 5)",
-                style: TextStyle(
-                  fontSize: 30,
-                  fontFamily: "Gabriola",
-                  fontFeatures: [
-                    FontFeature.stylisticSet(5)
-                  ]
-                ),
-              ),
-            ],
+            ),
           ),
         ),
-      )
+      ),
     );
   }
+}
+
+class MyClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    Path path = Path();
+
+    path.lineTo(0, size.height);
+    path.quadraticBezierTo(
+      size.width / 2,
+      size.height * 0.75,
+      size.width,
+      size.height,
+    );
+    path.lineTo(size.width, 0);
+    path.close();
+
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
