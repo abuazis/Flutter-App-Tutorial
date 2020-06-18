@@ -1,50 +1,49 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'model/post_result_model.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  PostResult postResult = null;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text("Custom Clipper"),
+          title: Text("API Demo"),
         ),
         body: Center(
-          child: ClipPath(
-            clipper: MyClipper(),
-            child: Image(
-              width: 300,
-              image: NetworkImage(
-                "https://i.pinimg.com/originals/3b/d5/a7/3bd5a78fede2560fc13ed5d55aa42538.jpg",
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Text((postResult != null)
+                  ? postResult.id +
+                      " | " +
+                      postResult.name +
+                      " | " +
+                      postResult.job +
+                      " | " +
+                      postResult.created
+                  : "Data kagak ada"),
+              RaisedButton(
+                child: Text("POST"),
+                onPressed: () {
+                  PostResult.connectToAPI("Abuza", "Developer").then((value) {
+                    postResult = value;
+                    setState(() {});
+                  });
+                },
               ),
-            ),
+            ],
           ),
         ),
       ),
     );
   }
-}
-
-class MyClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    Path path = Path();
-
-    path.lineTo(0, size.height);
-    path.quadraticBezierTo(
-      size.width / 2,
-      size.height * 0.75,
-      size.width,
-      size.height,
-    );
-    path.lineTo(size.width, 0);
-    path.close();
-
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
