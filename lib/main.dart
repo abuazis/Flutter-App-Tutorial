@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() => runApp(MyApp());
 
@@ -8,77 +9,62 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  double myPadding = 5;
+  TextEditingController controller = TextEditingController(text: "No Name");
+  bool isON = false;
+
+  void saveData() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.setString("nama", controller.text);
+    pref.setBool("ison", isON);
+  }
+
+  Future<String> getNama() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    return pref.getString("nama") ?? "No Name";
+  }
+
+  Future<bool> getON() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    return pref.getBool("ison") ?? false;
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text("Animated Padding"),
+          title: Text("Shared Preference Example"),
         ),
         body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Flexible(
-              flex: 1,
-              child: Row(
-                children: <Widget>[
-                  Flexible(
-                    flex: 1,
-                    child: AnimatedPadding(
-                      duration: Duration(seconds: 1),
-                      padding: EdgeInsets.all(myPadding),
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            myPadding += 5;
-                          });
-                        },
-                        child: Container(
-                          color: Colors.red,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Flexible(
-                    flex: 1,
-                    child: AnimatedPadding(
-                      duration: Duration(seconds: 1),
-                      padding: EdgeInsets.all(myPadding),
-                      child: Container(
-                        color: Colors.green,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+            TextField(
+              controller: controller,
             ),
-            Flexible(
-              flex: 1,
-              child: Row(
-                children: <Widget>[
-                  Flexible(
-                    flex: 1,
-                    child: AnimatedPadding(
-                      duration: Duration(seconds: 1),
-                      padding: EdgeInsets.all(myPadding),
-                      child: Container(
-                        color: Colors.yellow,
-                      ),
-                    ),
-                  ),
-                  Flexible(
-                    flex: 1,
-                    child: AnimatedPadding(
-                      duration: Duration(seconds: 1),
-                      padding: EdgeInsets.all(myPadding),
-                      child: Container(
-                        color: Colors.blue,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+            Switch(
+              value: isON,
+              onChanged: (newValue) {
+                setState(() {
+                  isON = newValue;
+                });
+              },
+            ),
+            RaisedButton(
+              child: Text("Save"),
+              onPressed: saveData,
+            ),
+            RaisedButton(
+              child: Text("Load"),
+              onPressed: () {
+                getNama().then((value) {
+                  controller.text = value;
+                  setState(() {});
+                });
+                getON().then((value) {
+                  isON = value;
+                  setState(() {});
+                });
+              },
             ),
           ],
         ),
