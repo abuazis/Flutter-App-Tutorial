@@ -8,80 +8,79 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool isON = false;
-  Widget myWidget = Container(
-    width: 200,
-    height: 100,
-    decoration: BoxDecoration(
-      color: Colors.red,
-      border: Border.all(
-        color: Colors.black,
-        width: 3,
-      ),
-    ),
-  );
+  double myPadding = 5;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text("Animated Switcher"),
+          title: Text("Animated Padding"),
         ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              AnimatedSwitcher(
-                duration: Duration(seconds: 1),
-                child: myWidget,
-                transitionBuilder: (child, animation) => FadeTransition(
-                  opacity: animation,
-                  child: child,
-                ),
+        body: Column(
+          children: <Widget>[
+            Flexible(
+              flex: 1,
+              child: Row(
+                children: <Widget>[
+                  Flexible(
+                    flex: 1,
+                    child: AnimatedPadding(
+                      duration: Duration(seconds: 1),
+                      padding: EdgeInsets.all(myPadding),
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            myPadding += 5;
+                          });
+                        },
+                        child: Container(
+                          color: Colors.red,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Flexible(
+                    flex: 1,
+                    child: AnimatedPadding(
+                      duration: Duration(seconds: 1),
+                      padding: EdgeInsets.all(myPadding),
+                      child: Container(
+                        color: Colors.green,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              Switch(
-                activeColor: Colors.green,
-                inactiveThumbColor: Colors.red,
-                inactiveTrackColor: Colors.red[200],
-                value: isON,
-                onChanged: (newValue) {
-                  isON = newValue;
-                  setState(
-                    () {
-                      if (isON) {
-                        myWidget = Container(
-                          key: ValueKey(1),
-                          width: 200,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            color: Colors.green,
-                            border: Border.all(
-                              color: Colors.black,
-                              width: 3,
-                            ),
-                          ),
-                        );
-                      } else {
-                        myWidget = Container(
-                          key: ValueKey(2),
-                          width: 200,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            border: Border.all(
-                              color: Colors.black,
-                              width: 3,
-                            ),
-                          ),
-                        );
-                      }
-                    },
-                  );
-                },
+            ),
+            Flexible(
+              flex: 1,
+              child: Row(
+                children: <Widget>[
+                  Flexible(
+                    flex: 1,
+                    child: AnimatedPadding(
+                      duration: Duration(seconds: 1),
+                      padding: EdgeInsets.all(myPadding),
+                      child: Container(
+                        color: Colors.yellow,
+                      ),
+                    ),
+                  ),
+                  Flexible(
+                    flex: 1,
+                    child: AnimatedPadding(
+                      duration: Duration(seconds: 1),
+                      padding: EdgeInsets.all(myPadding),
+                      child: Container(
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
