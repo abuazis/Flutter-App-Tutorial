@@ -1,110 +1,61 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'shared/money.dart';
-import 'shared/cart.dart';
+import 'bloc/color_bloc.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  ColorBloc bloc = ColorBloc();
+
+  @override
+  void dispose() {
+    bloc.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (context) => Money()),
-          ChangeNotifierProvider(create: (context) => Cart())
-        ],
-        child: Scaffold(
-          floatingActionButton: Consumer<Money>(
-            builder: (context, money, _) => Consumer<Cart>(
-              builder: (context, cart, _) => FloatingActionButton(
-                onPressed: () {
-                  cart.quantity++;
-                  money.balance -= 500;
-                },
-                child: Icon(Icons.shopping_cart),
-                backgroundColor: Colors.purple,
-              ),
+      home: Scaffold(
+        floatingActionButton: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            FloatingActionButton(
+              backgroundColor: Colors.amber,
+              onPressed: () {
+                bloc.eventSink.add(ColorEvent.to_amber);
+              },
             ),
-          ),
-          appBar: AppBar(
-            backgroundColor: Colors.purple,
-            title: Text("Multi Provider"),
-          ),
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text("Balance"),
-                    Container(
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Consumer<Money>(
-                          builder: (context, money, _) => Text(
-                            money.balance.toString(),
-                            style: TextStyle(
-                              color: Colors.purple,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                      ),
-                      height: 30,
-                      width: 150,
-                      margin: EdgeInsets.all(5),
-                      padding: EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: Colors.purple[100],
-                        border: Border.all(
-                          color: Colors.purple,
-                          width: 2,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Container(
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Consumer<Cart>(
-                      builder: (context, cart, _) => Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            "Apel (500) x " + cart.quantity.toString(),
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          Text(
-                            (500 * cart.quantity).toString(),
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  height: 30,
-                  margin: EdgeInsets.all(5),
-                  padding: EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    border: Border.all(
-                      color: Colors.black,
-                      width: 2,
-                    ),
-                  ),
-                ),
-              ],
+            SizedBox(
+              width: 10,
             ),
+            FloatingActionButton(
+              backgroundColor: Colors.lightBlue,
+              onPressed: () {
+                bloc.eventSink.add(ColorEvent.to_ligth_blue);
+              },
+            ),
+          ],
+        ),
+        appBar: AppBar(
+          title: Text("BLoC tanpa library"),
+        ),
+        body: Center(
+          child: StreamBuilder(
+            stream: bloc.stateStream,
+            initialData: Colors.amber,
+            builder: (context, snapshot) {
+              return AnimatedContainer(
+                duration: Duration(milliseconds: 500),
+                width: 100,
+                height: 100,
+                color: snapshot.data,
+              );
+            },
           ),
         ),
       ),
