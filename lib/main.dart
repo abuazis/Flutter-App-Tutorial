@@ -1,23 +1,94 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'widgets/user_profile.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
-  final UserProfile profile = UserProfile(
-    name: "Tony Stark",
-    role: "Iron Man",
-    photoURL: null,
-  );
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  int counter = 0;
+  bool isBlack = true;
+  bool isStop = true;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-            title: Text("Doc Comment Example"),
-            backgroundColor: Colors.red[900]),
-        body: Center(child: profile),
+          title: Text("Timer Demo"),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                counter.toString(),
+                style: TextStyle(
+                  fontSize: 40,
+                  fontWeight: FontWeight.bold,
+                  color: (isBlack) ? Colors.black : Colors.red,
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              RaisedButton(
+                child: Text("Ubah warna 5 detik kemudian"),
+                onPressed: () {
+                  Timer(Duration(seconds: 5), () {
+                    setState(() {
+                      isBlack = !isBlack;
+                    });
+                  });
+                },
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              RaisedButton(
+                child: Text("Ubah warna secara langsung"),
+                onPressed: () {
+                  Timer.run(() {
+                    setState(() {
+                      isBlack = !isBlack;
+                    });
+                  });
+                },
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              RaisedButton(
+                child: Text("Start Timer"),
+                onPressed: () {
+                  counter = 0;
+                  isStop = false;
+                  Timer.periodic(Duration(seconds: 1), (timer) {
+                    if (isStop) {
+                      timer.cancel();
+                    }
+                    setState(() {
+                      counter++;
+                    });
+                  });
+                },
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              RaisedButton(
+                child: Text("Stop Timer"),
+                onPressed: () {
+                  isStop = true;
+                },
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
