@@ -1,92 +1,53 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'provider/time_state.dart';
+import 'widgets/custom_progress_bar.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatefulWidget {
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  int counter = 0;
-  bool isBlack = true;
-  bool isStop = true;
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text("Timer Demo"),
+          title: Text("Custom Progress Bar"),
         ),
         body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                counter.toString(),
-                style: TextStyle(
-                  fontSize: 40,
-                  fontWeight: FontWeight.bold,
-                  color: (isBlack) ? Colors.black : Colors.red,
+          child: ChangeNotifierProvider<TimeState>(
+            create: (context) => TimeState(),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Consumer<TimeState>(
+                  builder: (context, timeState, _) => CustomProgressBar(
+                    width: 200,
+                    value: timeState.time,
+                    totalValue: 15,
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              RaisedButton(
-                child: Text("Ubah warna 5 detik kemudian"),
-                onPressed: () {
-                  Timer(Duration(seconds: 5), () {
-                    setState(() {
-                      isBlack = !isBlack;
-                    });
-                  });
-                },
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              RaisedButton(
-                child: Text("Ubah warna secara langsung"),
-                onPressed: () {
-                  Timer.run(() {
-                    setState(() {
-                      isBlack = !isBlack;
-                    });
-                  });
-                },
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              RaisedButton(
-                child: Text("Start Timer"),
-                onPressed: () {
-                  counter = 0;
-                  isStop = false;
-                  Timer.periodic(Duration(seconds: 1), (timer) {
-                    if (isStop) {
-                      timer.cancel();
-                    }
-                    setState(() {
-                      counter++;
-                    });
-                  });
-                },
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              RaisedButton(
-                child: Text("Stop Timer"),
-                onPressed: () {
-                  isStop = true;
-                },
-              ),
-            ],
+                SizedBox(height: 10),
+                Consumer<TimeState>(
+                  builder: (context, timeState, _) => RaisedButton(
+                    color: Colors.lightBlue,
+                    child: Text(
+                      "Start",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onPressed: () {
+                      Timer.periodic(Duration(seconds: 1), (timer) {
+                        (timeState.time == 0)
+                            ? timer.cancel()
+                            : timeState.time -= 1;
+                      });
+                    },
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
