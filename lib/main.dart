@@ -1,41 +1,69 @@
 import 'package:flutter/material.dart';
-import 'widgets/product_card.dart';
-import 'package:provider/provider.dart';
-import 'provider/product_state.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  List<bool> isSelected = [true, false, false];
+  ColorFilter colorFilter = ColorFilter.mode(Colors.blue, BlendMode.screen);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          backgroundColor: firstColor,
-        ),
-        body: ChangeNotifierProvider<ProductState>(
-          create: (context) => ProductState(),
-          child: Container(
-            margin: EdgeInsets.all(20),
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: Consumer<ProductState>(
-                builder: (context, productState, _) => ProductCard(
-                  imageURL:
-                      "https://cdn-prod.medicalnewstoday.com/content/images/articles/308/308796/mixed-fruits.jpg",
-                  name: "Buah-buahan mix 1 kg",
-                  price: "Rp 25.000",
-                  quantity: productState.quantity,
-                  notification: (productState.quantity > 5) ? "Diskon 10%" : null,
-                  onAddCartTap: () {},
-                  onIncTap: () {
-                    productState.quantity++;
-                  },
-                  onDecTap: () {
-                    productState.quantity--;
-                  },
+      home: ColorFiltered(
+        colorFilter: colorFilter,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text("Widgets Demo GDG 2019 China"),
+          ),
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                SelectableText(
+                  "Ini adalah selectable text. Silahkan pilih saya.",
+                  style: TextStyle(fontSize: 20),
+                  showCursor: true,
+                  cursorWidth: 3,
+                  cursorColor: Colors.red,
                 ),
-              ),
+                SizedBox(height: 10),
+                ToggleButtons(
+                  isSelected: isSelected,
+                  fillColor: Colors.red[50],
+                  selectedColor: Colors.red,
+                  selectedBorderColor: Colors.red,
+                  splashColor: Colors.blue,
+                  highlightColor: Colors.yellow,
+                  borderRadius: BorderRadius.circular(15),
+                  children: <Widget>[
+                    Icon(Icons.access_alarm),
+                    Icon(Icons.adb),
+                    Icon(Icons.add_comment),
+                  ],
+                  onPressed: (index) {
+                    setState(() {
+                      if (index == 0) {
+                        colorFilter =
+                            ColorFilter.mode(Colors.blue, BlendMode.screen);
+                      } else if (index == 1) {
+                        colorFilter =
+                            ColorFilter.mode(Colors.green, BlendMode.softLight);
+                      } else {
+                        colorFilter =
+                            ColorFilter.mode(Colors.purple, BlendMode.multiply);
+                      }
+                      for (int i = 0; i < isSelected.length; i++) {
+                        isSelected[i] = (i == index) ? true : false;
+                      }
+                    });
+                  },
+                )
+              ],
             ),
           ),
         ),
