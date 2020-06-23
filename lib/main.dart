@@ -1,70 +1,62 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'bloc/color_bloc.dart';
+import 'package:bloc/bloc.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 
-void main() => runApp(MyApp());
-
-class MyApp extends StatefulWidget {
-  @override
-  _MyAppState createState() => _MyAppState();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  BlocSupervisor.delegate = await HydratedBlocDelegate.build();
+  runApp(MyApp());
 }
 
-class _MyAppState extends State<MyApp> {
-  List<bool> isSelected = [true, false, false];
-  ColorFilter colorFilter = ColorFilter.mode(Colors.blue, BlendMode.screen);
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: ColorFiltered(
-        colorFilter: colorFilter,
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text("Widgets Demo GDG 2019 China"),
+      home: BlocProvider<ColorBloc>(
+        builder: (context) => ColorBloc(),
+        child: MainPage(),
+      ),
+    );
+  }
+}
+
+class MainPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    ColorBloc bloc = BlocProvider.of<ColorBloc>(context);
+    return Scaffold(
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          FloatingActionButton(
+            backgroundColor: Colors.amber,
+            onPressed: () {
+              bloc.dispatch(ColorEvent.to_amber);
+            },
           ),
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SelectableText(
-                  "Ini adalah selectable text. Silahkan pilih saya.",
-                  style: TextStyle(fontSize: 20),
-                  showCursor: true,
-                  cursorWidth: 3,
-                  cursorColor: Colors.red,
-                ),
-                SizedBox(height: 10),
-                ToggleButtons(
-                  isSelected: isSelected,
-                  fillColor: Colors.red[50],
-                  selectedColor: Colors.red,
-                  selectedBorderColor: Colors.red,
-                  splashColor: Colors.blue,
-                  highlightColor: Colors.yellow,
-                  borderRadius: BorderRadius.circular(15),
-                  children: <Widget>[
-                    Icon(Icons.access_alarm),
-                    Icon(Icons.adb),
-                    Icon(Icons.add_comment),
-                  ],
-                  onPressed: (index) {
-                    setState(() {
-                      if (index == 0) {
-                        colorFilter =
-                            ColorFilter.mode(Colors.blue, BlendMode.screen);
-                      } else if (index == 1) {
-                        colorFilter =
-                            ColorFilter.mode(Colors.green, BlendMode.softLight);
-                      } else {
-                        colorFilter =
-                            ColorFilter.mode(Colors.purple, BlendMode.multiply);
-                      }
-                      for (int i = 0; i < isSelected.length; i++) {
-                        isSelected[i] = (i == index) ? true : false;
-                      }
-                    });
-                  },
-                )
-              ],
-            ),
+          SizedBox(
+            width: 10,
+          ),
+          FloatingActionButton(
+            backgroundColor: Colors.lightBlue,
+            onPressed: () {
+              bloc.dispatch(ColorEvent.to_ligth_blue);
+            },
+          )
+        ],
+      ),
+      appBar: AppBar(
+        title: Text("BLoC with flutter_bloc"),
+      ),
+      body: Center(
+        child: BlocBuilder<ColorBloc, Color>(
+          builder: (context, currentColor) => AnimatedContainer(
+            width: 100,
+            height: 100,
+            color: currentColor,
+            duration: Duration(milliseconds: 500),
           ),
         ),
       ),
