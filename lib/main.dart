@@ -1,21 +1,19 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
+import 'bloc/product_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'bloc/color_bloc.dart';
-import 'package:bloc/bloc.dart';
-import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'model/product_model.dart';
+import 'widgets/product_card.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  BlocSupervisor.delegate = await HydratedBlocDelegate.build();
-  runApp(MyApp());
-}
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: BlocProvider<ColorBloc>(
-        builder: (context) => ColorBloc(),
+      debugShowCheckedModeBanner: false,
+      home: BlocProvider(
+        builder: (context) => ProductBloc(),
         child: MainPage(),
       ),
     );
@@ -23,42 +21,60 @@ class MyApp extends StatelessWidget {
 }
 
 class MainPage extends StatelessWidget {
+  final Random r = Random();
+
   @override
   Widget build(BuildContext context) {
-    ColorBloc bloc = BlocProvider.of<ColorBloc>(context);
+    ProductBloc bloc = BlocProvider.of<ProductBloc>(context);
+
     return Scaffold(
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+      appBar: AppBar(
+        backgroundColor: Color(0xFFF44336),
+        title: Text("Demo ListView Builder"),
+      ),
+      body: Column(
         children: <Widget>[
-          FloatingActionButton(
-            backgroundColor: Colors.amber,
+          RaisedButton(
+            color: Color(0xFFF44336),
+            child: Text(
+              "Create Products",
+              style: TextStyle(color: Colors.white),
+            ),
             onPressed: () {
-              bloc.dispatch(ColorEvent.to_amber);
+              bloc.dispatch(r.nextInt(4) + 2);
             },
           ),
           SizedBox(
-            width: 10,
+            height: 20,
           ),
-          FloatingActionButton(
-            backgroundColor: Colors.lightBlue,
-            onPressed: () {
-              bloc.dispatch(ColorEvent.to_ligth_blue);
-            },
-          )
+          BlocBuilder<ProductBloc, List<Product>>(
+            builder: (context, products) => Expanded(
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: products.length,
+                itemBuilder: (context, index) {
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      (index == 0) ? SizedBox(width: 20) : Container(),
+                      ProductCard(
+                        imageURL: products[index].imageURL,
+                        name: products[index].name,
+                        price: products[index].price.toString(),
+                        onAddCartTap: () {},
+                        onDecTap: () {},
+                        onIncTap: () {},
+                      ),
+                      SizedBox(
+                        width: 20,
+                      )
+                    ],
+                  );
+                },
+              ),
+            ),
+          ),
         ],
-      ),
-      appBar: AppBar(
-        title: Text("BLoC with flutter_bloc"),
-      ),
-      body: Center(
-        child: BlocBuilder<ColorBloc, Color>(
-          builder: (context, currentColor) => AnimatedContainer(
-            width: 100,
-            height: 100,
-            color: currentColor,
-            duration: Duration(milliseconds: 500),
-          ),
-        ),
       ),
     );
   }
