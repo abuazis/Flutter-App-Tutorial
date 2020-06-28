@@ -1,38 +1,45 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/bloc/user_bloc.dart';
-import 'package:flutter_app/model/user_model.dart';
-import 'package:flutter_app/ui/widgets/user_card.dart';
+import 'package:flutter_app/bloc/color_bloc.dart';
+import 'package:flutter_app/bloc/counter_bloc.dart';
+import 'package:flutter_app/ui/pages/draft_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'second_page.dart';
 
 class MainPage extends StatelessWidget {
-  final Random random = Random();
   @override
   Widget build(BuildContext context) {
-    UserBloc bloc = BlocProvider.of<UserBloc>(context);
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blueGrey,
-        title: Text("Demo MVVM"),
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          RaisedButton(
-            child: Text(
-              "Pick Random User",
-              style: TextStyle(color: Colors.white),
-            ),
-            color: Colors.grey,
-            onPressed: () {
-              bloc.dispatch(random.nextInt(10) + 1);
-            },
+    return BlocBuilder<ColorBloc, Color>(
+      builder: (context, color) => DraftPage(
+        backgroundColor: color,
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              BlocBuilder<CounterBloc, int>(
+                builder: (context, number) => Text(
+                  number.toString(),
+                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+                ),
+              ),
+              RaisedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SecondPage(),
+                    ),
+                  );
+                },
+                child: Text(
+                  "Click to Change",
+                  style: TextStyle(color: Colors.white),
+                ),
+                color: color,
+                shape: StadiumBorder(),
+              )
+            ],
           ),
-          BlocBuilder<UserBloc, User>(
-            builder: (context, user) =>
-                (user is UninitializedUser) ? Container() : UserCard(user),
-          )
-        ],
+        ),
       ),
     );
   }
