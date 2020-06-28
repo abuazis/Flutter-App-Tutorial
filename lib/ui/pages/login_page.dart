@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/pages/main_screen.dart';
+import 'main_page.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,7 +13,7 @@ class LoginScreen extends StatelessWidget {
                context,
                MaterialPageRoute(
                  builder: (context) {
-                   return MainScreen();
+                  //  return MainScreen();
                  }
                )
              );
