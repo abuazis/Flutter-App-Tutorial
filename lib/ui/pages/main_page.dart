@@ -1,100 +1,64 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/model/monster.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:flutter_app/bloc/post_bloc.dart';
+import 'package:flutter_app/ui/widgets/post_item.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class MainPage extends StatelessWidget {
+class MainPage extends StatefulWidget {
+  @override
+  _MainPageState createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  ScrollController controller = ScrollController();
+  PostBloc bloc;
+
+  void onScroll() {
+    double maxScroll = controller.position.maxScrollExtent;
+    double currentScroll = controller.position.pixels;
+
+    if (maxScroll == currentScroll) bloc.add(PostEvent());
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text("Hive Database Demo"),
-        ),
-        body: FutureBuilder(
-          future: Hive.openBox("monsters"),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              if (snapshot.hasError) {
-                return Center(
-                  child: Text(snapshot.error),
-                );
-              } else {
-                var monstersBox = Hive.box("monsters");
-                if (monstersBox.length == 0) {
-                  monstersBox.add(Monster("Vampire", 1));
-                  monstersBox.add(Monster("Jelly Guardian", 5));
-                }
-                return WatchBoxBuilder(
-                  box: monstersBox,
-                  builder: (context, monsters) => Container(
-                    margin: EdgeInsets.all(20),
-                    child: ListView.builder(
-                      itemCount: monsters.length,
-                      itemBuilder: (context, index) {
-                        Monster monster = monsters.getAt(index);
-                        return Container(
-                          padding: EdgeInsets.all(10),
-                          margin: EdgeInsets.only(bottom: 10),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black.withOpacity(0.5),
-                                  offset: Offset(3, 3),
-                                  blurRadius: 6)
-                            ],
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(
-                                monster.name +
-                                    " [" +
-                                    monster.level.toString() +
-                                    "]",
-                              ),
-                              Row(
-                                children: <Widget>[
-                                  IconButton(
-                                    icon: Icon(Icons.trending_up),
-                                    color: Colors.green,
-                                    onPressed: () {
-                                      monsters.putAt(
-                                        index,
-                                        Monster(monster.name, monster.level + 1),
-                                      );
-                                    },
-                                  ),
-                                  IconButton(
-                                    icon: Icon(Icons.content_copy),
-                                    color: Colors.amber,
-                                    onPressed: () {
-                                      monsters.add(
-                                        Monster(monster.name, monster.level),
-                                      );
-                                    },
-                                  ),
-                                  IconButton(
-                                    icon: Icon(Icons.delete),
-                                    color: Colors.red,
-                                    onPressed: () {
-                                      monsters.deleteAt(index);
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                );
-              }
-            } else {
+    bloc = BlocProvider.of<PostBloc>(context);
+    controller.addListener(onScroll);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Infinite List with BLoC"),
+      ),
+      body: Container(
+        margin: EdgeInsets.only(left: 20, right: 20),
+        child: BlocBuilder<PostBloc, PostState>(
+          builder: (context, state) {
+            if (state is PostUninitialized) {
               return Center(
-                child: CircularProgressIndicator(),
+                child: SizedBox(
+                  width: 30,
+                  height: 30,
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            } else {
+              PostLoaded postLoaded = state as PostLoaded;
+              return ListView.builder(
+                controller: controller,
+                itemCount: (postLoaded.hasReachedMax)
+                    ? postLoaded.posts.length
+                    : postLoaded.posts.length + 1,
+                itemBuilder: (context, index) =>
+                    (index < postLoaded.posts.length)
+                        ? PostItem(postLoaded.posts[index])
+                        : Container(
+                            child: Center(
+                              child: SizedBox(
+                                width: 30,
+                                height: 30,
+                                child: CircularProgressIndicator(),
+                              ),
+                            ),
+                          ),
               );
             }
           },

@@ -20,7 +20,7 @@ class SecondPage extends StatelessWidget {
               BlocBuilder<CounterBloc, int>(
                 builder: (context, number) => GestureDetector(
                   onTap: () {
-                    counterBloc.dispatch(number++);
+                    counterBloc.add(number++);
                   },
                   child: Text(
                     number.toString(),
@@ -33,7 +33,7 @@ class SecondPage extends StatelessWidget {
                 children: <Widget>[
                   RaisedButton(
                     onPressed: () {
-                      colorBloc.dispatch(ColorEvent.toPink);
+                      colorBloc.add(ColorEvent.toPink);
                     },
                     color: Colors.pink,
                     shape: (color == Colors.pink)
@@ -44,7 +44,7 @@ class SecondPage extends StatelessWidget {
                   ),
                   RaisedButton(
                     onPressed: () {
-                      colorBloc.dispatch(ColorEvent.toAmber);
+                      colorBloc.add(ColorEvent.toAmber);
                     },
                     color: Colors.amber,
                     shape: (color == Colors.amber)
@@ -55,7 +55,7 @@ class SecondPage extends StatelessWidget {
                   ),
                   RaisedButton(
                     onPressed: () {
-                      colorBloc.dispatch(ColorEvent.toPurple);
+                      colorBloc.add(ColorEvent.toPurple);
                     },
                     color: Colors.purple,
                     shape: (color == Colors.purple)
