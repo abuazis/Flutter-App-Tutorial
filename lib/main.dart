@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'model/person_model.dart';
 
 void main() => runApp(MyApp());
 
@@ -12,67 +13,61 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MainPage extends StatelessWidget {
+class MainPage extends StatefulWidget {
+  @override
+  _MainPageState createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  Person selectedPerson;
+  List<Person> persons = [Person("Joni"), Person("Joko")];
+
+  List<DropdownMenuItem> generateItems(List<Person> persons) {
+    List<DropdownMenuItem> items = [];
+    for (var item in persons) {
+      items.add(
+        DropdownMenuItem(
+          child: Text(item.name),
+          value: item,
+        ),
+      );
+    }
+    return items;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text("Judul"),
-        ),
-        body: Container(),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Demo Dropdown Button"),
+      ),
+      body: Column(
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.all(20),
+            child: DropdownButton(
+              isExpanded: true,
+              style: TextStyle(fontSize: 20, color: Colors.purple),
+              value: selectedPerson,
+              items: generateItems(persons),
+              onChanged: (item) {
+                setState(() {
+                  selectedPerson = item;
+                });
+              },
+            ),
+          ),
+          Text(
+            (selectedPerson != null)
+                ? selectedPerson.name
+                : "Belum ada yang terpilih",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
       ),
     );
   }
 }
-
-class Person {
-  String _name;
-  
-  void setWhat(String value) { _name = value; }
-  String getterName() => _name;
-}
-
-// {
-// 	"Stateless MyApp": {
-// 		"prefix": "stateless myapp",
-// 		"body": [
-// 			"class MyApp extends StatelessWidget {",
-// 			"\t@override",
-// 			"\tWidget build(BuildContext context) {",
-// 			"\t\treturn MaterialApp(",
-// 			"\t\t\tdebugShowCheckedModeBanner: false,",
-// 			"\t\t\thome: $0,",
-// 			"\t\t);",
-// 			"\t}",
-// 			"}"
-// 		]
-// 	},
-// 	"Stateless Page": {
-// 		"prefix": "stateless page",
-// 		"body": [
-// 			"class $1 extends StatelessWidget {",
-// 			"\t@override",
-// 			"\tWidget build(BuildContext context) {",
-// 			"\t\treturn MaterialApp(",
-// 			"\t\t\thome: Scaffold(",
-// 			"\t\t\t\tappBar: AppBar(",
-// 			"\t\t\t\t\ttitle: Text('$1'),",
-// 			"\t\t\t\t),",
-// 			"\t\t\t\tbody: $0,",
-// 			"\t\t\t),",
-// 			"\t\t);",
-// 			"\t}",
-// 			"}"
-// 		]
-// 	},
-// 	"Field Get Set": {
-// 		"prefix": "field get set",
-// 		"body": [
-// 			"${1:fieldType} _${2:fieldName};",
-// 			"",
-// 			"void ${3:setterName}(${1:fieldType} value) { _${2:fieldName} = value; }",
-// 			"${1:fieldType} ${4:getterName}() => _${2:fieldName};"
-// 		]
-// 	}
-// }
