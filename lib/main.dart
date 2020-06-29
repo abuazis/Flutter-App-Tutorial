@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
-import 'model/person_model.dart';
+import 'model/monster.dart';
+import 'ui/pages/main_page.dart';
+import 'package:path_provider/path_provider.dart' as pathProvider;
+import 'package:hive/hive.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  var appDocumentDirectory = await pathProvider.getApplicationDocumentsDirectory();
+  Hive.init(appDocumentDirectory.path);
+  Hive.registerAdapter(MonsterAdapter());
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -9,65 +18,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: MainPage(),
-    );
-  }
-}
-
-class MainPage extends StatefulWidget {
-  @override
-  _MainPageState createState() => _MainPageState();
-}
-
-class _MainPageState extends State<MainPage> {
-  Person selectedPerson;
-  List<Person> persons = [Person("Joni"), Person("Joko")];
-
-  List<DropdownMenuItem> generateItems(List<Person> persons) {
-    List<DropdownMenuItem> items = [];
-    for (var item in persons) {
-      items.add(
-        DropdownMenuItem(
-          child: Text(item.name),
-          value: item,
-        ),
-      );
-    }
-    return items;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Demo Dropdown Button"),
-      ),
-      body: Column(
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.all(20),
-            child: DropdownButton(
-              isExpanded: true,
-              style: TextStyle(fontSize: 20, color: Colors.purple),
-              value: selectedPerson,
-              items: generateItems(persons),
-              onChanged: (item) {
-                setState(() {
-                  selectedPerson = item;
-                });
-              },
-            ),
-          ),
-          Text(
-            (selectedPerson != null)
-                ? selectedPerson.name
-                : "Belum ada yang terpilih",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
