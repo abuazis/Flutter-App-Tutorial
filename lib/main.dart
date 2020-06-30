@@ -1,8 +1,8 @@
+import 'package:division/division.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/mobx/counter.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-
-final CounterMobx counter = CounterMobx();
+import 'ui/styles/custom_style.dart';
+import 'ui/widgets/custom_button.dart';
+import 'ui/widgets/manual_button.dart';
 
 void main() => runApp(MyApp());
 
@@ -21,42 +21,25 @@ class MainPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        backgroundColor: Colors.grey[800],
         appBar: AppBar(
-          title: Text("MOBX State Management Demo"),
+          title: Txt(
+            "Division",
+            style: CustomStyle.txtStyle.clone()..fontSize(18),
+          ),
+          backgroundColor: Colors.red[900],
         ),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Observer(
-                builder: (context) => Text(
-                  counter.value.toString(),
-                  style: TextStyle(fontSize: 80),
-                ),
+              CustomButton(CustomStyle.buttonStyle),
+              SizedBox(height: 20),
+              CustomButton(
+                CustomStyle.buttonStyle.clone()
+                  ..background.color(Colors.green[300])
+                  ..border(all: 3, color: Colors.green[900]),
               ),
-              SizedBox(
-                height: 40,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  FloatingActionButton(
-                    onPressed: () {
-                      counter.decrement();
-                    },
-                    child: Icon(Icons.arrow_downward),
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  FloatingActionButton(
-                    onPressed: () {
-                      counter.increment();
-                    },
-                    child: Icon(Icons.arrow_upward),
-                  ),
-                ],
-              )
             ],
           ),
         ),

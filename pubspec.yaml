@@ -36,6 +36,7 @@ dependencies:
   mobx: ^1.2.1+1
   mobx_codegen: ^1.1.0+1
   flutter_mobx: ^1.1.0+1
+  division: ^0.8.8
 
 dev_dependencies:
   flutter_test:
@@ -72,11 +73,9 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: Lato
+    - family: Literata
       fonts:
-        - asset: assets/fonts/lato.regular.ttf
-        - asset: assets/fonts/lato.bold.ttf
-          weight: 700
+        - asset: assets/fonts/Literata-Regular.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
