@@ -1,5 +1,4 @@
 import 'package:hive/hive.dart';
-part 'monster.g.dart';
 
 @HiveType()
 class Monster {
