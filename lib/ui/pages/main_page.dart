@@ -1,67 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/bloc/post_bloc.dart';
-import 'package:flutter_app/ui/widgets/post_item.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_app/ui/widgets/movie_box.dart';
 
-class MainPage extends StatefulWidget {
-  @override
-  _MainPageState createState() => _MainPageState();
-}
-
-class _MainPageState extends State<MainPage> {
-  ScrollController controller = ScrollController();
-  PostBloc bloc;
-
-  void onScroll() {
-    double maxScroll = controller.position.maxScrollExtent;
-    double currentScroll = controller.position.pixels;
-
-    if (maxScroll == currentScroll) bloc.add(PostEvent());
-  }
+class MainPage extends StatelessWidget {
+  List<Color> colors = [Colors.red, Colors.green, Colors.blue];
+  PageController controller = PageController(initialPage: 0, viewportFraction: 0.6);
+  List<String> urls = [
+    "https://images-na.ssl-images-amazon.com/images/I/81aP6k6h8vL._AC_SY741_.jpg",
+    "https://i.pinimg.com/736x/93/c4/9f/93c49f511754128a0beca3c8bbb1aab5.jpg",
+    "https://2.bp.blogspot.com/-y2BT140ggdA/WoFL8pbESAI/AAAAAAAADLU/42kfCa9ZO-458QzFihOA4MRi4W42UW88ACEwYBhgL/s1600/Danmachi%2Bposter.jpg",
+    "https://i.pinimg.com/originals/c3/39/50/c33950d67c8489418ac96ebbde18349c.jpg",
+  ];
 
   @override
   Widget build(BuildContext context) {
-    bloc = BlocProvider.of<PostBloc>(context);
-    controller.addListener(onScroll);
-
     return Scaffold(
       appBar: AppBar(
-        title: Text("Infinite List with BLoC"),
+        backgroundColor: Colors.black,
+        title: Text("Widget Slider"),
       ),
-      body: Container(
-        margin: EdgeInsets.only(left: 20, right: 20),
-        child: BlocBuilder<PostBloc, PostState>(
-          builder: (context, state) {
-            if (state is PostUninitialized) {
-              return Center(
-                child: SizedBox(
-                  width: 30,
-                  height: 30,
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            } else {
-              PostLoaded postLoaded = state as PostLoaded;
-              return ListView.builder(
-                controller: controller,
-                itemCount: (postLoaded.hasReachedMax)
-                    ? postLoaded.posts.length
-                    : postLoaded.posts.length + 1,
-                itemBuilder: (context, index) =>
-                    (index < postLoaded.posts.length)
-                        ? PostItem(postLoaded.posts[index])
-                        : Container(
-                            child: Center(
-                              child: SizedBox(
-                                width: 30,
-                                height: 30,
-                                child: CircularProgressIndicator(),
-                              ),
-                            ),
-                          ),
-              );
-            }
-          },
+      body: PageView.builder(
+        controller: controller,
+        itemCount: urls.length,
+        itemBuilder: (context, index) => Center(
+          child: MovieBox(urls[index]),
         ),
       ),
     );
