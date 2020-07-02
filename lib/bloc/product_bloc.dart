@@ -1,22 +1,32 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
-import 'package:flutter_app/model/product_model.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter_app/model/product.dart';
 
-class ProductBloc extends Bloc<int, List<Product>> {
+part 'product_event.dart';
+part 'product_state.dart';
+
+class ProductBloc extends Bloc<ProductEvent, ProductState> {
   @override
-  List<Product> get initialState => [];
+  ProductState get initialState => ProductInitial();
 
   @override
-  Stream<List<Product>> mapEventToState(int event) async* {
-    List<Product> products = [];
-    for (int i = 0; i < event; i++) {
-      products.add(
-        Product(
-          imageURL:"https://cdn-prod.medicalnewstoday.com/content/images/articles/308/308796/mixed-fruits.jpg",
-          name: "Product " + i.toString(),
-          price: (i + 1) * 5000,
-        ),
-      );
+  Stream<ProductState> mapEventToState(
+    ProductEvent event,
+  ) async* {
+    if (event is AddProduct) {
+      if (state is ProductInitial) {
+        yield ProductLoaded([event.product]);
+      } else {
+        yield ProductLoaded((state as ProductLoaded).products + [event.product]);
+      }
+    } else {
+      if (state is ProductInitial) {
+        yield state;
+      } else {
+        yield ProductLoaded((state as ProductLoaded).products.where((item) => item != event.product).toList());
+      }
     }
-    yield products;
   }
 }
