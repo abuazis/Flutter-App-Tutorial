@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() => runApp(MyApp());
 
@@ -7,50 +8,42 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        textTheme: GoogleFonts.srirachaTextTheme().copyWith(
+          bodyText1: GoogleFonts.modak(),
+        ),
+      ),
       home: MainPage(),
     );
   }
 }
 
-class MainPage extends StatefulWidget {
-  @override
-  _MainPageState createState() => _MainPageState();
-}
-
-class _MainPageState extends State<MainPage> {
-  int number = 0;
-
+class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    Color fontColor = const Color(0xFFFFB401);
+
     return Scaffold(
+      backgroundColor: const Color(0xFF1E252D),
       appBar: AppBar(
-        title: Semantics(
-          hidden: true,
-          excludeSemantics: true,
-          child: Text("Aplikasi Aksesbilitas"),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            number++;
-          });
-        },
-        child: Semantics(
-          onTapHint: "menambahkan bilangan dengan satu.",
-          child: Icon(Icons.plus_one),
-        ),
+        backgroundColor: const Color(0xFF282F37),
+        title: Text("Google Fonts"),
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Semantics(
-              label:
-                  "Ini adalah bilangan yang akan ditambahkan. Bilangan saat ini adalah",
-              child: Text(
-                number.toString(),
-                style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold),
+            Text(
+              "I'll keep learning Flutter!",
+              style: TextStyle(
+                color: fontColor,
+                fontSize: 25,
+              ),
+            ),
+            Text(
+              "I'll keep learning Flutter!",
+              style: Theme.of(context).textTheme.bodyText1.copyWith(
+                color: fontColor,
+                fontSize: 25,
               ),
             ),
           ],
