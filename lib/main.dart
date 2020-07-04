@@ -1,55 +1,69 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/services/auth_services.dart';
 import 'package:flutter_app/services/database_services.dart';
+import 'package:image_picker/image_picker.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  String imagePath;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: Text("Firestore Demo"),
+          title: Text("Firebase Storage Demo"),
         ),
         body: Container(
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                RaisedButton(
-                  child: Text("Add Data"),
-                  onPressed: () {
-                    DatabaseServices.createOrUpdateProduct(
-                      "1",
-                      name: "Masker",
-                      price: 1000000,
-                    );
-                  },
+                (imagePath != null)
+                    ? Container(
+                        width: 200,
+                        height: 200,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.black),
+                          image: DecorationImage(
+                            image: NetworkImage(imagePath),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      )
+                    : Container(
+                        width: 200,
+                        height: 200,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.black),
+                        ),
+                      ),
+                SizedBox(
+                  height: 10,
                 ),
                 RaisedButton(
-                  child: Text("Edit Data"),
-                  onPressed: () {
-                    DatabaseServices.createOrUpdateProduct(
-                      "1",
-                      name: "Masker",
-                      price: 2000000,
-                    );
-                  },
-                ),
-                RaisedButton(
-                  child: Text("Delete Data"),
-                  onPressed: () {
-                    DatabaseServices.deleteProduct("1");
-                  },
-                ),
-                RaisedButton(
-                  child: Text("Get Data"),
+                  child: Text("Sign In"),
                   onPressed: () async {
-                    DocumentSnapshot snapshot = await DatabaseServices.getProduct("1");
-                    print(snapshot.data['nama']);
-                    print(snapshot.data['harga']);
+                    AuthServices.signInAnonymous();
+                  },
+                ),
+                RaisedButton(
+                  child: Text("Upload Image"),
+                  onPressed: () async {
+                    File file = await getImage();
+                    imagePath = await DatabaseServices.uploadImage(file);
+
+                    setState(() {});
                   },
                 ),
               ],
@@ -59,4 +73,9 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<File> getImage() async {
+  var image = await ImagePicker().getImage(source: ImageSource.gallery);
+  return File(image.path);
 }
